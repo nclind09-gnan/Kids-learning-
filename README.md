@@ -17,7 +17,7 @@ Every screen changes with the class (2, 3, 4 or 5). An "All classes together" se
 
 **Option 1: from the browser (recommended).** Open the app link in Chrome on Android and choose **Install app** (or menu ⋮ → **Add to Home screen**). It then works offline, and read-aloud uses the phone's voice.
 
-App link (after GitHub Pages is turned on): `https://nclind09-gnan.github.io/kids-learning/`
+App link (after GitHub Pages is turned on): `https://nclind09-gnan.github.io/Kids-learning-/`
 
 **Option 2: APK file.** Every push to `main` builds an Android APK automatically. Open the **Releases** page of this repository, download `ABC-Corner.apk`, and open it on the phone. Android will ask you to allow installing apps from your browser or file manager the first time.
 
