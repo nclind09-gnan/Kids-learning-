@@ -1,4 +1,4 @@
-# Numbers and ABC Corner
+# Learning Zone
 
 A Maths and English learning app for Class 2 to 5.
 
@@ -19,7 +19,7 @@ Every screen changes with the class (2, 3, 4 or 5). An "All classes together" se
 
 App link (after GitHub Pages is turned on): `https://nclind09-gnan.github.io/Kids-learning-/`
 
-**Option 2: APK file.** Every push to `main` builds an Android APK automatically. Open the **Releases** page of this repository, download `ABC-Corner.apk`, and open it on the phone. Android will ask you to allow installing apps from your browser or file manager the first time.
+**Option 2: APK file.** Every push to `main` builds an Android APK automatically. Open the **Releases** page of this repository, download `Learning-Zone.apk`, and open it on the phone. Android will ask you to allow installing apps from your browser or file manager the first time.
 
 ## Files
 

@@ -1,6 +1,6 @@
 {
-  "name": "Numbers and ABC Corner",
-  "short_name": "ABC Corner",
+  "name": "Learning Zone",
+  "short_name": "Learning Zone",
   "description": "Maths and English learning app for Class 2 to 5. Built by Gnaneswar.",
   "start_url": "./",
   "scope": "./",

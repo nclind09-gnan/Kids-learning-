@@ -44,21 +44,21 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk ../ABC-Corner.apk
+          cp app/build/outputs/apk/debug/app-debug.apk ../Learning-Zone.apk
 
       - name: Save the APK as a build file
         uses: actions/upload-artifact@v4
         with:
-          name: ABC-Corner-apk
-          path: ABC-Corner.apk
+          name: Learning-Zone-apk
+          path: Learning-Zone.apk
 
       - name: Publish the APK as a release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: apk-${{ github.run_number }}
-          name: ABC Corner (build ${{ github.run_number }})
+          name: Learning Zone (build ${{ github.run_number }})
           body: |
-            Numbers and ABC Corner — Maths and English for Class 2 to 5.
+            Learning Zone — Maths and English for Class 2 to 5.
             Built by Gnaneswar.
-            Download ABC-Corner.apk below and open it on an Android phone to install.
-          files: ABC-Corner.apk
+            Download Learning-Zone.apk below and open it on an Android phone to install.
+          files: Learning-Zone.apk

@@ -2,7 +2,7 @@
   "name": "kids-learning",
   "version": "1.0.0",
   "private": true,
-  "description": "Numbers and ABC Corner: Maths and English for Class 2 to 5. Built by Gnaneswar.",
+  "description": "Learning Zone: Maths and English for Class 2 to 5. Built by Gnaneswar.",
   "author": "Gnaneswar",
   "scripts": {
     "prepare-web": "rm -rf www && mkdir -p www && cp index.html manifest.webmanifest sw.js www/ && cp -r icons www/"
