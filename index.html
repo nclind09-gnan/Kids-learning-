@@ -1657,51 +1657,45 @@ const ACT_INFO={explore:['123','See everything about any number'],practice:['?',
   fractions:['½','Colour parts of shapes to make fractions'],clock:['3:00','Read the clock and work with time'],money:['₹','Count rupees, find change and make bills'],speed:['60s','Answer as many as you can in 60 seconds'],
   phonics:['Aa','Hear the sound of every letter A to Z'],say:['a·b','Break long words into parts and say them'],word:['abc','Spell words from a picture or a clue'],sentence:['A b.','Put words in order to make a sentence']};
 let route={cls:null,subj:null,act:null};
-const toHash=r=>r.all?'all-'+r.subj+(r.z?'-'+r.z+(r.z==='learn'&&r.act?'-'+r.act:''):''):r.cls?'c'+r.cls+(r.subj?'-'+r.subj+(r.act?'-'+r.act:''):''):'';
+const toHash=r=>{const sub=r.subj?'-'+r.subj+(r.z?'-'+r.z+(r.z==='learn'&&r.act?'-'+r.act:''):''):'';return r.all?'all'+sub:r.cls?'c'+r.cls+sub:'';};
 function parseHash(){let h='';try{h=decodeURIComponent(location.hash.slice(1));}catch(e){}return parseTarget(h);}
-function parseTarget(h){const A=h.match(/^all-(maths|english)(?:-(learn|adv)(?:-([a-z]+))?)?$/);
-  if(A){const r={all:true,cls:null,subj:A[1],z:A[2]||null,act:A[3]||null};if(r.act&&!ACTS[r.subj].some(x=>x[0]===r.act))r.act=null;return r;}
-  const m=h.match(/^c([2-5])(?:-(maths|english)(?:-([a-z]+))?)?$/);if(!m)return {cls:null,subj:null,act:null};
-  const r={cls:+m[1],subj:m[2]||null,act:m[3]||null};if(r.act&&r.act!=='advanced'&&!ACTS[r.subj].some(x=>x[0]===r.act))r.act=null;return r;}
+function parseTarget(h){const m=h.match(/^(?:all|c([2-5]))(?:-(maths|english)(?:-([a-z]+)(?:-([a-z]+))?)?)?$/);if(!m||(!m[1]&&!m[2]))return {cls:null,subj:null,act:null};
+  const r={all:!m[1],cls:m[1]?+m[1]:null,subj:m[2]||null,z:null,act:null};const a=m[3],b=m[4];
+  if(r.subj&&a){if(a==='adv'||a==='advanced')r.z='adv';else{r.z='learn';const act=a==='learn'?b:a;if(act&&ACTS[r.subj].some(x=>x[0]===act))r.act=act;}}
+  return r;}
 function go(r,replace){route=r;try{const h=toHash(r);if(location.hash.slice(1)!==h){if(replace)location.replace('#'+h);else location.hash=h;}}catch(e){}show();}
 window.addEventListener('hashchange',()=>{const r=parseHash();if(toHash(r)!==toHash(route)){route=r;show();}});
-const parent=r=>r.all?(r.z?{all:true,subj:r.subj}:{cls:null,subj:null,act:null}):r.subj?{cls:r.cls,subj:null,act:null}:{cls:null,subj:null,act:null};
+const parent=r=>r.z?{all:r.all,cls:r.cls,subj:r.subj}:r.subj&&r.cls?{cls:r.cls}:{cls:null,subj:null,act:null};
 function item(tone,ic,title,sub,target,small){return `<button class="mitem" style="--c:var(--${tone});--cs:var(--${tone}-soft)" data-go="${target}"><span class="ic${small?' sm':''}">${esc(ic)}</span><span class="mt"><b>${esc(title)}</b><small>${esc(sub)}</small></span><span class="chev" aria-hidden="true">›</span></button>`;}
-function showAll(r){const menu=$('#menu'),acts=$('#acts'),lvl=$('#lvl'),nm=SUBJ_INFO[r.subj][1];$('#zone').hidden=true;
-  const cr=[['Home',toHash({})],[`${nm} · all classes`,r.z?toHash({all:true,subj:r.subj}):null]];if(r.z)cr.push([r.z==='adv'?'Advanced Topics':'Learning Zone',null]);
-  $('#crumbs').innerHTML=cr.map(([t,h],i)=>i===cr.length-1?`<span aria-current="page">${esc(t)}</span>`:`<button data-go="${h}">${esc(t)}</button>`).join('<span class="sep">›</span>');
-  if(!r.z){acts.hidden=true;acts.innerHTML='';$('#panel').innerHTML='';menu.hidden=false;const tone=SUBJ_INFO[r.subj][3];
-    const nAdv=[2,3,4,5].reduce((a,c)=>a+Object.keys((r.subj==='maths'?ADV:EADV)[c]).length,0);
-    menu.innerHTML=`<h2>${nm}: Class 2 to 5</h2>`+item(tone,'▶','Learning Zone',`${ACTS[r.subj].length} activities for every class: ${ACTS[r.subj].map(x=>x[1]).join(', ')}`,toHash({all:true,subj:r.subj,z:'learn'}))
-      +item(r.subj==='maths'?'leaf':'mango','★','Advanced Topics',`${nAdv} topics from Class 2 to 5, ${r.subj==='maths'?'with step-by-step methods':'with grammar rules step by step'}`,toHash({all:true,subj:r.subj,z:'adv'}));return;}
+function crumbsHTML(cr){return cr.map(([t,h],i)=>i===cr.length-1||h==null?`<span aria-current="page">${esc(t)}</span>`:`<button data-go="${h}">${esc(t)}</button>`).join('<span class="sep">›</span>');}
+function showSub(r){const menu=$('#menu'),acts=$('#acts'),lvl=$('#lvl'),nm=SUBJ_INFO[r.subj][1],base={all:r.all,cls:r.cls,subj:r.subj};$('#zone').hidden=true;
+  const cr=[['Home','']];if(r.cls)cr.push([`Class ${r.cls}`,toHash({cls:r.cls})]);cr.push([r.all?`${nm} · all classes`:nm,r.z?toHash(base):null]);if(r.z)cr.push([r.z==='adv'?'Advanced Topics':'Learning Zone',null]);
+  $('#crumbs').innerHTML=crumbsHTML(cr);
+  if(!r.z){acts.hidden=true;acts.innerHTML='';$('#panel').innerHTML='';menu.hidden=false;const tone=SUBJ_INFO[r.subj][3],TB=r.subj==='maths'?ADV:EADV;
+    const nAdv=r.all?[2,3,4,5].reduce((a,c)=>a+Object.keys(TB[c]).length,0):Object.keys(TB[r.cls]).length;
+    menu.innerHTML=`<h2>${r.all?`${nm}: Class 2 to 5`:`Class ${r.cls} ${nm}`}</h2>`
+      +item(tone,'▶','Learning Zone',`${ACTS[r.subj].length} activities${r.all?' for every class':''}: ${ACTS[r.subj].map(x=>x[1]).join(', ')}`,toHash({...base,z:'learn'}))
+      +item(r.subj==='maths'?'leaf':'mango','★','Advanced Topics',`${nAdv} topics${r.all?' from Class 2 to 5':''}, ${r.subj==='maths'?'with step-by-step methods':'with grammar rules step by step'}`,toHash({...base,z:'adv'}));return;}
   menu.hidden=true;menu.innerHTML='';
   if(r.z==='adv'){acts.hidden=true;acts.innerHTML='';renderAdvanced();return;}
   const act=r.act||S.act[r.subj]||ACTS[r.subj][0][0];S.subject=r.subj;S.act[r.subj]=act;
   acts.hidden=false;acts.style.setProperty('--accent',r.subj==='maths'?'var(--sky)':'var(--coral)');
   acts.innerHTML=ACTS[r.subj].map(([k,t])=>`<button data-act="${k}" aria-pressed="${k===act}">${esc(t)}</button>`).join('');
-  lvl.hidden=false;lvl.innerHTML=`<span>Class level</span>${[2,3,4,5].map(c=>`<button data-c="${c}" aria-pressed="${c===S.cls}">Class ${c}</button>`).join('')}`;RENDER[act]();}
+  if(r.all){lvl.hidden=false;lvl.innerHTML=`<span>Class level</span>${[2,3,4,5].map(c=>`<button data-c="${c}" aria-pressed="${c===S.cls}">Class ${c}</button>`).join('')}`;}
+  RENDER[act]();}
 function show(){clearInterval(window.__spd);KP=null;try{speechSynthesis.cancel();}catch(e){}
   if(route.cls&&route.cls!==S.cls){S.cls=route.cls;save('nac-class',S.cls);S.sayIdx=S.wbIdx=S.sbIdx=0;S.streak=0;S.right=0;S.asked=0;}
-  const r=route,menu=$('#menu');$('#navbar').hidden=!r.cls&&!r.all;$('#lvl').hidden=true;
-  if(r.all){showAll(r);try{window.scrollTo(0,0);}catch(e){}return;}
-  const cr=[['Home',toHash({})]];if(r.cls)cr.push([`Class ${r.cls}`,toHash({cls:r.cls})]);if(r.subj)cr.push([SUBJ_INFO[r.subj][1],toHash({cls:r.cls,subj:r.subj})]);
-  $('#crumbs').innerHTML=cr.map(([t,h],i)=>i===cr.length-1?`<span aria-current="page">${esc(t)}</span>`:`<button data-go="${h}">${esc(t)}</button>`).join('<span class="sep">›</span>');
-  const acts=$('#acts');
-  const zone=$('#zone');zone.hidden=!r.subj;const adv=!!r.subj&&r.act==='advanced';
-  if(!zone.hidden)zone.innerHTML=`<button data-zone="learn" aria-pressed="${!adv}"><b>Learning Zone</b><small>Practice, games and tools</small></button><button data-zone="adv" aria-pressed="${adv}"><b>Advanced Topics</b><small>${r.subj==='maths'?'Step-by-step methods':'Grammar rules step by step'}</small></button>`;
-  if(adv){menu.hidden=true;menu.innerHTML='';acts.hidden=true;acts.innerHTML='';renderAdvanced();}
-  else if(r.subj){menu.hidden=true;menu.innerHTML='';const act=r.act||S.act[r.subj]||ACTS[r.subj][0][0];S.subject=r.subj;S.act[r.subj]=act;
-    acts.hidden=false;acts.style.setProperty('--accent',r.subj==='maths'?'var(--sky)':'var(--coral)');
-    acts.innerHTML=ACTS[r.subj].map(([k,t])=>`<button data-act="${k}" aria-pressed="${k===act}">${esc(t)}</button>`).join('');RENDER[act]();}
-  else{acts.hidden=true;acts.innerHTML='';$('#panel').innerHTML='';menu.hidden=false;
-    if(!r.cls)menu.innerHTML=`<h2>Choose your class</h2>`+[2,3,4,5].map((c,i)=>item(TONE[i],String(c),`Class ${c}`,CLASS_INFO[c],toHash({cls:c}))).join('')+`<h2 class="msec">All classes together</h2>`+['maths','english'].map(k=>{const [ic,t,,tone]=SUBJ_INFO[k];return item(tone,ic,t,k==='maths'?'Maths from Class 2 to 5: Learning Zone and Advanced Topics':'English from Class 2 to 5: Learning Zone and Advanced Topics',toHash({all:true,subj:k}));}).join('');
-    else menu.innerHTML=`<h2>Class ${r.cls}: choose a subject</h2>`+['maths','english'].map(k=>{const [ic,t,sub,tone]=SUBJ_INFO[k];return item(tone,ic,t,`${ACTS[k].length} activities · ${sub}`,toHash({cls:r.cls,subj:k}));}).join('');}
-
+  const r=route,menu=$('#menu');$('#navbar').hidden=!r.cls&&!r.all;$('#lvl').hidden=true;$('#zone').hidden=true;
+  if(r.subj){showSub(r);try{window.scrollTo(0,0);}catch(e){}return;}
+  $('#crumbs').innerHTML=crumbsHTML([['Home',''],...(r.cls?[[`Class ${r.cls}`,null]]:[])]);
+  const acts=$('#acts');acts.hidden=true;acts.innerHTML='';$('#panel').innerHTML='';menu.hidden=false;
+  if(!r.cls)menu.innerHTML=`<h2>Choose your class</h2>`+[2,3,4,5].map((c,i)=>item(TONE[i],String(c),`Class ${c}`,CLASS_INFO[c],toHash({cls:c}))).join('')+`<h2 class="msec">All classes together</h2>`+['maths','english'].map(k=>{const [ic,t,,tone]=SUBJ_INFO[k];return item(tone,ic,t,k==='maths'?'Maths from Class 2 to 5: Learning Zone and Advanced Topics':'English from Class 2 to 5: Learning Zone and Advanced Topics',toHash({all:true,subj:k}));}).join('');
+  else menu.innerHTML=`<h2>Class ${r.cls}: choose a subject</h2>`+['maths','english'].map(k=>{const [ic,t,sub,tone]=SUBJ_INFO[k];return item(tone,ic,t,`Learning Zone and Advanced Topics · ${sub}`,toHash({cls:r.cls,subj:k}));}).join('');
   try{window.scrollTo(0,0);}catch(e){}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b||!(b.closest('#menu')||b.closest('#crumbs')))return;go(parseTarget(b.dataset.go));});
 $('#backBtn').onclick=()=>go(parent(route));
 $('#zone').onclick=e=>{const b=e.target.closest('[data-zone]');if(!b)return;go({cls:route.cls,subj:route.subj,act:b.dataset.zone==='adv'?'advanced':null},true);};
-$('#acts').onclick=e=>{const b=e.target.closest('[data-act]');if(!b)return;go(route.all?{...route,act:b.dataset.act}:{cls:route.cls,subj:route.subj,act:b.dataset.act},true);};
+$('#acts').onclick=e=>{const b=e.target.closest('[data-act]');if(!b)return;go({...route,z:'learn',act:b.dataset.act},true);};
 $('#lvl').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;S.cls=+b.dataset.c;S.sayIdx=S.wbIdx=S.sbIdx=0;S.streak=0;S.right=0;S.asked=0;show();};
 const sb=$('#soundBtn');const drawSound=()=>{sb.textContent=S.sound?'Sound on':'Sound off';sb.setAttribute('aria-pressed',S.sound);};
 sb.onclick=()=>{S.sound=!S.sound;save('nac-sound',S.sound);if(!S.sound&&'speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}drawSound();};
