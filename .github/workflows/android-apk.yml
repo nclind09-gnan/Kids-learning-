@@ -1,0 +1,67 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Capacitor
+        run: npm install
+
+      - name: Copy the app into www
+        run: npm run prepare-web
+
+      - name: Create the Android project
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Use the app icon
+        continue-on-error: true
+        run: |
+          mkdir -p assets
+          cp icons/icon-1024.png assets/icon-only.png
+          cp icons/icon-1024.png assets/icon-foreground.png
+          npx @capacitor/assets generate --android --iconBackgroundColor '#EAF4FB' --splashBackgroundColor '#EAF4FB'
+
+      - name: Build the APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../ABC-Corner.apk
+
+      - name: Save the APK as a build file
+        uses: actions/upload-artifact@v4
+        with:
+          name: ABC-Corner-apk
+          path: ABC-Corner.apk
+
+      - name: Publish the APK as a release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: ABC Corner (build ${{ github.run_number }})
+          body: |
+            Numbers and ABC Corner — Maths and English for Class 2 to 5.
+            Built by Gnaneswar.
+            Download ABC-Corner.apk below and open it on an Android phone to install.
+          files: ABC-Corner.apk

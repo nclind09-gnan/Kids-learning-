@@ -1,0 +1,6 @@
+{
+  "appId": "com.gnaneswar.kidslearning",
+  "appName": "ABC Corner",
+  "webDir": "www",
+  "android": { "backgroundColor": "#EAF4FB" }
+}
