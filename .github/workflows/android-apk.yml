@@ -37,7 +37,7 @@ jobs:
       - name: Use the app icon
         run: |
           cp -r android-icons/* android/app/src/main/res/
-          sed -i 's/#FFFFFF/#EAF4FB/' android/app/src/main/res/values/ic_launcher_background.xml
+          sed -i 's/#FFFFFF/#FCE44A/' android/app/src/main/res/values/ic_launcher_background.xml
 
       - name: Build the APK
         run: |
