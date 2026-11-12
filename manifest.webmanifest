@@ -1,0 +1,13 @@
+{
+  "name": "Numbers and ABC Corner",
+  "short_name": "ABC Corner",
+  "description": "Maths and English practice for Class 2 to 5",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f3ff",
+  "theme_color": "#5b4bdb",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

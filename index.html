@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numbers and ABC Corner</title>
+<meta name="description" content="Maths and English practice for Class 2 to 5">
+<meta name="theme-color" content="#5b4bdb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f3ff;
+    --card: #ffffff;
+    --ink: #24203a;
+    --muted: #6b6685;
+    --brand: #5b4bdb;
+    --brand-ink: #ffffff;
+    --maths: #ff8a3d;
+    --maths-soft: #fff1e6;
+    --english: #1fa37a;
+    --english-soft: #e4f7ef;
+    --star: #f5b400;
+    --good: #18a058;
+    --good-soft: #dff5e8;
+    --bad: #e0464e;
+    --bad-soft: #fde6e7;
+    --line: #e6e1f5;
+    --shadow: 0 4px 0 rgba(36, 32, 58, .10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17152a;
+      --card: #24213d;
+      --ink: #f2f0ff;
+      --muted: #aaa5c8;
+      --brand: #8b7dff;
+      --brand-ink: #17152a;
+      --maths: #ffa266;
+      --maths-soft: #3a2a22;
+      --english: #4fd1a5;
+      --english-soft: #1d3a31;
+      --star: #ffd34d;
+      --good: #4fd18b;
+      --good-soft: #1d3a2b;
+      --bad: #ff7a80;
+      --bad-soft: #42232a;
+      --line: #36325a;
+      --shadow: 0 4px 0 rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Baloo 2", "Comic Sans MS", "Segoe UI", system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.35;
+    min-height: 100vh;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 16px 40px; }
+  .screen[hidden] { display: none !important; }
+
+  /* Header */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .logo {
+    width: 56px; height: 56px; border-radius: 16px; background: var(--brand);
+    display: grid; place-items: center; font-weight: 800; font-size: 22px; color: #ffd34d;
+    box-shadow: var(--shadow); flex: none; letter-spacing: -1px;
+  }
+  .logo span { color: #fff; }
+  .stars {
+    display: inline-flex; align-items: center; gap: 6px; background: var(--card);
+    border: 2px solid var(--line); border-radius: 999px; padding: 4px 14px;
+    font-weight: 800; font-size: 20px;
+  }
+  .stars .s { color: var(--star); }
+  h1 { font-size: clamp(30px, 7vw, 42px); line-height: 1.05; margin: 18px 0 4px; font-weight: 800; }
+  .sub { color: var(--muted); margin: 0; font-size: 19px; }
+  .by { margin: 6px 0 0; color: var(--muted); font-size: 16px; }
+  .by b { color: var(--brand); }
+
+  /* Class picker */
+  .label { font-weight: 800; margin: 24px 0 8px; font-size: 20px; }
+  .classes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .cls {
+    background: var(--card); border: 3px solid var(--line); border-radius: 16px;
+    padding: 8px 4px; font-weight: 800; font-size: 20px; box-shadow: var(--shadow);
+  }
+  .cls small { display: block; font-size: 13px; color: var(--muted); font-weight: 700; margin-bottom: -4px; }
+  .cls[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+  .cls[aria-pressed="true"] small { color: inherit; opacity: .85; }
+
+  /* Topic grid */
+  .subject { display: flex; align-items: center; gap: 10px; margin: 28px 0 10px; }
+  .subject h2 { margin: 0; font-size: 26px; font-weight: 800; }
+  .pill { font-size: 14px; font-weight: 800; border-radius: 999px; padding: 2px 10px; color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .topic {
+    background: var(--card); border: 3px solid var(--line); border-radius: 20px; padding: 14px 12px 12px;
+    text-align: left; box-shadow: var(--shadow); transition: transform .1s; min-height: 112px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .topic:active { transform: translateY(3px); box-shadow: none; }
+  .topic .emo { font-size: 30px; line-height: 1; }
+  .topic .name { font-weight: 800; font-size: 19px; margin-top: 6px; }
+  .topic .best { font-size: 14px; color: var(--muted); font-weight: 700; }
+  .maths .topic:hover { border-color: var(--maths); }
+  .english .topic:hover { border-color: var(--english); }
+  .maths .topic .emo { color: var(--maths); }
+  .tip {
+    margin-top: 28px; background: var(--card); border: 2px dashed var(--line); border-radius: 16px;
+    padding: 12px 14px; color: var(--muted); font-size: 16px;
+  }
+  .reset { margin-top: 10px; font-size: 14px; color: var(--muted); text-decoration: underline; }
+
+  /* Quiz */
+  .bar { display: flex; align-items: center; gap: 10px; }
+  .iconbtn {
+    width: 48px; height: 48px; border-radius: 14px; background: var(--card); border: 2px solid var(--line);
+    font-size: 22px; display: grid; place-items: center; flex: none; box-shadow: var(--shadow);
+  }
+  .progress { flex: 1; height: 16px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--brand); border-radius: 999px; transition: width .3s; }
+  .qtitle { margin: 18px 0 0; color: var(--muted); font-weight: 700; font-size: 17px; }
+  .card {
+    background: var(--card); border: 3px solid var(--line); border-radius: 24px; padding: 20px 16px;
+    margin-top: 10px; box-shadow: var(--shadow); text-align: center;
+  }
+  .qtext { font-size: 22px; font-weight: 700; margin: 0; }
+  .qbig { font-size: clamp(34px, 10vw, 54px); font-weight: 800; margin: 6px 0 0; letter-spacing: 1px; word-break: break-word; }
+  .qbig mark { background: var(--maths-soft); color: var(--maths); border-radius: 10px; padding: 0 8px; }
+  .sentence { font-size: 26px; font-weight: 700; margin: 10px 0 0; }
+  .sentence mark { background: var(--english-soft); color: var(--english); border-radius: 8px; padding: 0 6px; }
+  .speak {
+    margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; background: var(--brand);
+    color: var(--brand-ink); border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 18px;
+    box-shadow: var(--shadow);
+  }
+  .speak.big { font-size: 22px; padding: 12px 26px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .opt {
+    background: var(--card); border: 3px solid var(--line); border-radius: 18px; padding: 14px 8px;
+    font-size: 24px; font-weight: 800; box-shadow: var(--shadow); min-height: 72px; word-break: break-word;
+  }
+  .opt:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+  .opt:disabled { cursor: default; }
+  .opt.right { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .opt.wrong { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .feedback { min-height: 34px; margin: 14px 0 0; text-align: center; font-weight: 800; font-size: 22px; }
+  .feedback.good { color: var(--good); }
+  .feedback.bad { color: var(--bad); }
+  .next {
+    display: block; width: 100%; margin-top: 10px; background: var(--brand); color: var(--brand-ink);
+    border-radius: 18px; padding: 14px; font-size: 22px; font-weight: 800; box-shadow: var(--shadow);
+  }
+  .next[hidden] { display: none; }
+
+  /* Result */
+  .result { text-align: center; }
+  .result .big-emo { font-size: 84px; margin-top: 20px; line-height: 1; }
+  .result h2 { font-size: 34px; margin: 10px 0 0; }
+  .result .score { font-size: 22px; color: var(--muted); margin: 4px 0 0; }
+  .result .earned { font-size: 40px; letter-spacing: 4px; margin: 14px 0; color: var(--star); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+  .ghost {
+    background: var(--card); border: 3px solid var(--line); border-radius: 18px; padding: 14px;
+    font-size: 20px; font-weight: 800; box-shadow: var(--shadow);
+  }
+  .row .next { margin-top: 0; }
+
+  @keyframes pop { 0% { transform: scale(.9); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  .pop { animation: pop .3s ease; }
+  @media (max-width: 380px) {
+    .opt { font-size: 20px; }
+    .classes { gap: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pop { animation: none; } .progress i { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HOME -->
+  <section id="home" class="screen">
+    <div class="top">
+      <div class="logo" aria-hidden="true">12<span>Aa</span></div>
+      <div class="stars" title="Stars earned"><span class="s">★</span><span class="starCount">0</span></div>
+    </div>
+    <h1>Numbers and ABC Corner</h1>
+    <p class="sub">Maths and English practice for Class 2 to 5</p>
+    <p class="by">Built by <b>Gnaneswar</b></p>
+
+    <div class="label">Choose your class</div>
+    <div class="classes" id="classes"></div>
+
+    <div class="maths">
+      <div class="subject"><h2>Maths</h2><span class="pill" style="background:var(--maths)">Numbers</span></div>
+      <div class="grid" id="mathsGrid"></div>
+    </div>
+
+    <div class="english">
+      <div class="subject"><h2>English</h2><span class="pill" style="background:var(--english)">ABC</span></div>
+      <div class="grid" id="englishGrid"></div>
+    </div>
+
+    <div class="tip">
+      💡 Tip: tap the speaker buttons to hear words read aloud. Stars are saved on this phone or computer.
+      <br><button class="reset" id="resetBtn">Reset stars</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="screen" hidden>
+    <div class="bar">
+      <button class="iconbtn" id="backBtn" aria-label="Back to home">←</button>
+      <div class="progress" aria-hidden="true"><i id="progBar"></i></div>
+      <div class="stars"><span class="s">★</span><span class="starCount">0</span></div>
+    </div>
+    <p class="qtitle" id="qTitle"></p>
+    <div class="card" id="qCard"></div>
+    <div class="opts" id="opts"></div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+    <button class="next" id="nextBtn" hidden>Next →</button>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="screen result" hidden>
+    <div class="big-emo" id="rEmo">🎉</div>
+    <h2 id="rTitle">Well done!</h2>
+    <p class="score" id="rScore"></p>
+    <div class="earned" id="rStars"></div>
+    <div class="row">
+      <button class="ghost" id="homeBtn">🏠 Home</button>
+      <button class="next" id="againBtn">Play again</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* ---------- helpers ---------- */
+  const $ = s => document.querySelector(s);
+  const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const shuffle = arr => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+  const fmt = n => n.toLocaleString('en-IN');
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const QUESTIONS_PER_ROUND = 10;
+
+  /* ---------- saved progress ---------- */
+  const KEY = 'abc-corner-v1';
+  const store = (() => {
+    let data = { stars: 0, cls: 2, best: {} };
+    try { const raw = localStorage.getItem(KEY); if (raw) data = Object.assign(data, JSON.parse(raw)); } catch (e) { /* storage blocked */ }
+    return {
+      data,
+      save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { /* ignore */ } }
+    };
+  })();
+
+  /* ---------- speech ---------- */
+  const canSpeak = 'speechSynthesis' in window;
+  let voice = null;
+  function chooseVoice() {
+    if (!canSpeak) return;
+    const vs = speechSynthesis.getVoices();
+    voice = vs.find(v => v.lang === 'en-IN') || vs.find(v => v.lang === 'en-GB') || vs.find(v => /^en/i.test(v.lang)) || null;
+  }
+  if (canSpeak) { chooseVoice(); speechSynthesis.onvoiceschanged = chooseVoice; }
+  function say(text) {
+    if (!canSpeak || !text) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      if (voice) { u.voice = voice; u.lang = voice.lang; } else { u.lang = 'en-IN'; }
+      u.rate = 0.85;
+      speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+  }
+
+  /* ---------- little sounds ---------- */
+  let actx = null;
+  function beep(good) {
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = good ? [660, 880] : [300, 220];
+      notes.forEach((f, i) => {
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        const t = actx.currentTime + i * 0.12;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.2, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.2);
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  /* ---------- number options ---------- */
+  function numQ(ans, step, extra) {
+    const c = new Set();
+    [1, 2, 3, 10, step || 1, (step || 1) * 2].forEach(d => { c.add(ans + d); c.add(ans - d); });
+    (extra || []).forEach(x => c.add(x));
+    c.delete(ans);
+    const wrong = shuffle([...c].filter(x => x >= 0 && Number.isInteger(x))).slice(0, 3);
+    return { options: shuffle([ans, ...wrong]).map(fmt), answer: fmt(ans) };
+  }
+  const digitsFor = { 2: 2, 3: 3, 4: 4, 5: 5 };
+  const nDigit = d => rand(Math.pow(10, d - 1), Math.pow(10, d) - 1);
+
+  /* ---------- MATHS ---------- */
+  const NAMES = ['Ravi', 'Asha', 'Meena', 'Arjun', 'Sita', 'Kabir', 'Priya', 'Rahul', 'Anu', 'Vikram'];
+
+  const maths = {
+    add: {
+      name: 'Addition', emo: '➕',
+      make(c) {
+        let a, b;
+        if (c === 2) { a = rand(10, 89); b = rand(1, 99 - a); }
+        else { a = nDigit(digitsFor[c]); b = nDigit(digitsFor[c]); }
+        const q = numQ(a + b, 10, [a + b + 100, a + b - 100]);
+        return { title: 'Add the numbers', big: `${fmt(a)} + ${fmt(b)} = ?`, speak: `What is ${a} plus ${b}?`, ...q };
+      }
+    },
+    sub: {
+      name: 'Subtraction', emo: '➖',
+      make(c) {
+        let a, b;
+        if (c === 2) { a = rand(20, 99); b = rand(1, a - 1); }
+        else { a = nDigit(digitsFor[c]); b = rand(Math.pow(10, digitsFor[c] - 2), a - 1); }
+        const q = numQ(a - b, 10, [a + b]);
+        return { title: 'Take away', big: `${fmt(a)} − ${fmt(b)} = ?`, speak: `What is ${a} minus ${b}?`, ...q };
+      }
+    },
+    mul: {
+      name: 'Multiplication', emo: '✖️',
+      make(c) {
+        let a, b;
+        if (c === 2) { a = pick([2, 3, 4, 5, 10]); b = rand(1, 10); }
+        else if (c === 3) { a = rand(2, 10); b = rand(2, 10); }
+        else if (c === 4) { a = rand(11, 99); b = rand(2, 9); }
+        else { a = rand(11, 99); b = rand(11, 25); }
+        if (Math.random() < 0.5 && c <= 3) [a, b] = [b, a];
+        const q = numQ(a * b, Math.min(a, b), [a * (b + 1), a * (b - 1), (a + 1) * b]);
+        return { title: 'Multiply', big: `${fmt(a)} × ${fmt(b)} = ?`, speak: `What is ${a} times ${b}?`, ...q };
+      }
+    },
+    div: {
+      name: 'Division', emo: '➗',
+      make(c) {
+        let d, ans;
+        if (c === 2) { d = pick([2, 5, 10]); ans = rand(1, 10); }
+        else if (c === 3) { d = rand(2, 10); ans = rand(2, 10); }
+        else if (c === 4) { d = rand(2, 9); ans = rand(11, 99); }
+        else { d = rand(3, 12); ans = rand(100, 999); }
+        const n = d * ans;
+        const q = numQ(ans, 10);
+        return { title: 'Divide (share equally)', big: `${fmt(n)} ÷ ${d} = ?`, speak: `What is ${n} divided by ${d}?`, ...q };
+      }
+    },
+    place: {
+      name: 'Place value', emo: '🔢',
+      make(c) {
+        const PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands'];
+        const len = digitsFor[c];
+        const digits = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, len);
+        const num = Number(digits.join(''));
+        const pos = rand(0, len - 1);                // index from left
+        const p = len - 1 - pos;                     // power of ten
+        const d = digits[pos];
+        if (c === 2) {
+          const others = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => x !== d && !digits.includes(x))).slice(0, 2);
+          const wrong = [...digits.filter(x => x !== d), ...others].slice(0, 3);
+          return {
+            title: 'Find the digit', text: `Which digit is in the ${PLACES[p]} place?`, big: fmt(num),
+            speak: `Which digit is in the ${PLACES[p]} place of ${num}?`,
+            options: shuffle([d, ...wrong]).map(String), answer: String(d)
+          };
+        }
+        const ans = d * Math.pow(10, p);
+        const wrong = shuffle([...Array(len).keys()].filter(k => k !== p)).slice(0, 3).map(k => fmt(d * Math.pow(10, k)));
+        const bigHtml = String(fmt(num)).replace(String(d), `<mark>${d}</mark>`);
+        return {
+          title: 'Place value', text: `What is the place value of ${d}?`, bigHtml,
+          speak: `What is the place value of ${d} in ${num}?`,
+          options: shuffle([fmt(ans), ...wrong]), answer: fmt(ans)
+        };
+      }
+    },
+    word: {
+      name: 'Word problems', emo: '📖',
+      make(c) {
+        const max = { 2: 20, 3: 100, 4: 1000, 5: 10000 }[c];
+        const name = pick(NAMES);
+        const kind = pick(['add', 'sub', 'mul', 'div']);
+        let text, ans, step = 1;
+        if (kind === 'add') {
+          const a = rand(Math.ceil(max / 10), Math.floor(max / 2)), b = rand(Math.ceil(max / 10), Math.floor(max / 2));
+          const thing = pick(['marbles', 'stickers', 'stamps', 'shells']);
+          text = `${name} has ${fmt(a)} ${thing}. ${name} gets ${fmt(b)} more. How many ${thing} does ${name} have now?`;
+          ans = a + b; step = 10;
+        } else if (kind === 'sub') {
+          const a = rand(Math.ceil(max / 2), max), b = rand(1, a - 1);
+          const [place, thing, verb] = pick([['on a tree', 'birds', 'fly away'], ['in a basket', 'mangoes', 'are eaten'], ['in a shop', 'balloons', 'are sold']]);
+          text = `There are ${fmt(a)} ${thing} ${place}. ${fmt(b)} ${verb}. How many ${thing} are left?`;
+          ans = a - b; step = 10;
+        } else if (kind === 'mul') {
+          const each = c === 2 ? rand(2, 5) : c === 3 ? rand(2, 10) : rand(11, c === 4 ? 50 : 99);
+          const boxes = c === 2 ? rand(2, 4) : c === 3 ? rand(2, 10) : rand(3, c === 4 ? 9 : 25);
+          const [box, thing] = pick([['box', 'pencils'], ['packet', 'biscuits'], ['row', 'chairs'], ['bag', 'apples']]);
+          text = `One ${box} has ${each} ${thing}. How many ${thing} are there in ${boxes} ${box === 'box' ? 'boxes' : box + 's'}?`;
+          ans = each * boxes; step = each;
+        } else {
+          const kids = c === 2 ? pick([2, 5]) : c === 3 ? rand(2, 10) : rand(3, 12);
+          const each = c === 2 ? rand(1, 5) : c === 3 ? rand(2, 10) : rand(11, c === 4 ? 60 : 250);
+          const thing = pick(['sweets', 'books', 'flowers', 'crayons']);
+          text = `${fmt(kids * each)} ${thing} are shared equally among ${kids} children. How many ${thing} does each child get?`;
+          ans = each;
+        }
+        return { title: 'Read and solve', text, speak: text, long: true, ...numQ(ans, step) };
+      }
+    }
+  };
+
+  /* ---------- ENGLISH data ---------- */
+  const SPELL = {
+    2: ['cat', 'dog', 'sun', 'ball', 'fish', 'tree', 'book', 'milk', 'frog', 'star', 'cake', 'rain', 'ship', 'duck', 'bird', 'hand', 'lamp', 'boat'],
+    3: ['apple', 'house', 'water', 'green', 'happy', 'school', 'friend', 'garden', 'little', 'people', 'mother', 'yellow', 'window', 'pencil', 'flower', 'animal'],
+    4: ['beautiful', 'because', 'different', 'library', 'kitchen', 'minute', 'island', 'answer', 'believe', 'favourite', 'weather', 'special', 'surprise', 'village', 'thought', 'enough'],
+    5: ['necessary', 'government', 'environment', 'separate', 'knowledge', 'temperature', 'vegetable', 'dictionary', 'restaurant', 'achievement', 'committee', 'definitely', 'neighbour', 'excellent', 'calendar', 'tomorrow']
+  };
+  const OPP = {
+    2: [['big', 'small'], ['hot', 'cold'], ['up', 'down'], ['day', 'night'], ['happy', 'sad'], ['fast', 'slow'], ['open', 'close'], ['wet', 'dry'], ['old', 'new'], ['in', 'out'], ['tall', 'short'], ['come', 'go']],
+    3: [['early', 'late'], ['heavy', 'light'], ['strong', 'weak'], ['rich', 'poor'], ['push', 'pull'], ['empty', 'full'], ['loud', 'quiet'], ['buy', 'sell'], ['clean', 'dirty'], ['give', 'take'], ['inside', 'outside'], ['laugh', 'cry']],
+    4: [['ancient', 'modern'], ['victory', 'defeat'], ['generous', 'selfish'], ['arrive', 'depart'], ['forget', 'remember'], ['accept', 'refuse'], ['increase', 'decrease'], ['entrance', 'exit'], ['success', 'failure'], ['friend', 'enemy'], ['polite', 'rude'], ['shallow', 'deep']],
+    5: [['optimistic', 'pessimistic'], ['temporary', 'permanent'], ['expand', 'contract'], ['ascend', 'descend'], ['artificial', 'natural'], ['transparent', 'opaque'], ['minimum', 'maximum'], ['humble', 'proud'], ['voluntary', 'compulsory'], ['import', 'export'], ['majority', 'minority'], ['innocent', 'guilty']]
+  };
+  const PLURAL = {
+    2: [['cat', 'cats'], ['box', 'boxes'], ['bus', 'buses'], ['dog', 'dogs'], ['dish', 'dishes'], ['cup', 'cups'], ['fox', 'foxes'], ['hat', 'hats'], ['bench', 'benches'], ['pen', 'pens']],
+    3: [['baby', 'babies'], ['leaf', 'leaves'], ['man', 'men'], ['child', 'children'], ['tooth', 'teeth'], ['city', 'cities'], ['knife', 'knives'], ['foot', 'feet'], ['lady', 'ladies'], ['woman', 'women']],
+    4: [['mouse', 'mice'], ['goose', 'geese'], ['sheep', 'sheep'], ['potato', 'potatoes'], ['wolf', 'wolves'], ['deer', 'deer'], ['tomato', 'tomatoes'], ['half', 'halves'], ['story', 'stories'], ['person', 'people']],
+    5: [['ox', 'oxen'], ['cactus', 'cacti'], ['crisis', 'crises'], ['fungus', 'fungi'], ['thief', 'thieves'], ['hero', 'heroes'], ['fish', 'fish'], ['louse', 'lice'], ['shelf', 'shelves'], ['radius', 'radii']]
+  };
+  const SENTENCES = [
+    { s: 'The little dog barks loudly.', w: { little: 'Adjective', dog: 'Noun', barks: 'Verb', loudly: 'Adverb' } },
+    { s: 'Asha sings a sweet song.', w: { Asha: 'Noun', sings: 'Verb', sweet: 'Adjective', song: 'Noun' } },
+    { s: 'The brave soldier walked slowly.', w: { brave: 'Adjective', soldier: 'Noun', walked: 'Verb', slowly: 'Adverb' } },
+    { s: 'Ravi eats a red apple.', w: { Ravi: 'Noun', eats: 'Verb', red: 'Adjective', apple: 'Noun' } },
+    { s: 'The old man reads quietly.', w: { old: 'Adjective', man: 'Noun', reads: 'Verb', quietly: 'Adverb' } },
+    { s: 'Birds fly in the blue sky.', w: { Birds: 'Noun', fly: 'Verb', blue: 'Adjective', sky: 'Noun' } },
+    { s: 'The tiny ant carries food carefully.', w: { tiny: 'Adjective', ant: 'Noun', carries: 'Verb', food: 'Noun', carefully: 'Adverb' } },
+    { s: 'Meena writes neat letters.', w: { Meena: 'Noun', writes: 'Verb', neat: 'Adjective', letters: 'Noun' } },
+    { s: 'The cold wind blew strongly.', w: { cold: 'Adjective', wind: 'Noun', blew: 'Verb', strongly: 'Adverb' } },
+    { s: 'Kabir kicked the round ball.', w: { Kabir: 'Noun', kicked: 'Verb', round: 'Adjective', ball: 'Noun' } },
+    { s: 'The clever fox ran quickly.', w: { clever: 'Adjective', fox: 'Noun', ran: 'Verb', quickly: 'Adverb' } },
+    { s: 'My kind teacher smiles happily.', w: { kind: 'Adjective', teacher: 'Noun', smiles: 'Verb', happily: 'Adverb' } }
+  ];
+  const ABC_GROUPS = {
+    sa: ['sand', 'sail', 'salt', 'same', 'save', 'safe'],
+    br: ['bread', 'brave', 'brick', 'bring', 'brown', 'brush'],
+    ca: ['cake', 'camp', 'card', 'cart', 'cave', 'cage'],
+    pl: ['plant', 'plate', 'plane', 'play', 'plum', 'plus'],
+    st: ['stamp', 'star', 'stone', 'story', 'study', 'stick'],
+    tr: ['train', 'tree', 'trick', 'truck', 'true', 'track']
+  };
+  const ABC_SHARED1 = {
+    m: ['mango', 'milk', 'moon', 'mouse', 'map', 'mud'],
+    p: ['pen', 'pot', 'park', 'pig', 'pupil', 'plum'],
+    b: ['ball', 'bird', 'bus', 'bell', 'book', 'bread'],
+    t: ['tiger', 'table', 'toy', 'tent', 'tub', 'tree'],
+    r: ['rain', 'red', 'rose', 'rice', 'rug', 'run']
+  };
+  const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
+  const CONSONANTS = 'bcdfghjklmnpqrstvwxz';
+
+  function misspell(w) {
+    const vowels = 'aeiou';
+    const ops = [
+      x => { const i = rand(1, x.length - 2); return x.slice(0, i) + x[i + 1] + x[i] + x.slice(i + 2); },
+      x => { const i = rand(1, x.length - 1); return x.slice(0, i) + x.slice(i + 1); },
+      x => { const i = rand(1, x.length - 1); return x.slice(0, i) + x[i] + x.slice(i); },
+      x => {
+        const idx = [...x].map((ch, i) => (i > 0 && vowels.includes(ch) ? i : -1)).filter(i => i > 0);
+        if (!idx.length) return x + 'e';
+        const i = pick(idx);
+        return x.slice(0, i) + pick([...vowels].filter(v => v !== x[i])) + x.slice(i + 1);
+      }
+    ];
+    return pick(ops)(w);
+  }
+
+  const english = {
+    spell: {
+      name: 'Spelling', emo: '🔤',
+      make(c) {
+        const w = pick(SPELL[c]);
+        const set = new Set();
+        let tries = 0;
+        while (set.size < 3 && tries++ < 60) { const m = misspell(w); if (m !== w && m.length > 1) set.add(m); }
+        return {
+          title: 'Listen and choose', text: canSpeak ? 'Tap 🔊 to hear the word. Pick the correct spelling.' : 'Pick the correct spelling.',
+          hear: w, speak: w, options: shuffle([w, ...set]), answer: w, autoSpeak: true
+        };
+      }
+    },
+    missing: {
+      name: 'Missing letter', emo: '❓',
+      make(c) {
+        const words = SPELL[c].filter(w => /[aeiou]/.test(w.slice(1)));
+        const w = pick(words);
+        const idx = [...w].map((ch, i) => ('aeiou'.includes(ch) && i > 0 ? i : -1)).filter(i => i > 0);
+        const i = pick(idx);
+        const letter = w[i];
+        const wrong = shuffle([...CONSONANTS].filter(ch => ch !== letter && ch !== w[i - 1] && ch !== w[i + 1])).slice(0, 3);
+        const shown = w.slice(0, i) + '_' + w.slice(i + 1);
+        return {
+          title: 'Fill the gap', text: 'Which letter is missing?', big: shown.split('').join(' '), hear: w, speak: w,
+          options: shuffle([letter, ...wrong]), answer: letter
+        };
+      }
+    },
+    opp: {
+      name: 'Opposites', emo: '↔️',
+      make(c) {
+        const pairs = OPP[c];
+        let [a, b] = pick(pairs);
+        if (Math.random() < 0.5) [a, b] = [b, a];
+        const pool = pairs.flat().filter(x => x !== a && x !== b);
+        return {
+          title: 'Opposite words', text: 'What is the opposite of', big: a, hear: a,
+          speak: `What is the opposite of ${a}?`, options: shuffle([b, ...shuffle(pool).slice(0, 3)]), answer: b
+        };
+      }
+    },
+    plural: {
+      name: 'Plurals', emo: '👥',
+      make(c) {
+        const [one, many] = pick(PLURAL[c]);
+        const cands = new Set([one + 's', one + 'es', one.slice(0, -1) + 'ies', one.slice(0, -1) + 'ves', one, one + 'en']);
+        cands.delete(many);
+        const wrong = shuffle([...cands].filter(x => x.length > 1)).slice(0, 3);
+        return {
+          title: 'One and many', text: 'One… many? Choose the plural of', big: one, hear: one,
+          speak: `What is the plural of ${one}?`, options: shuffle([many, ...wrong]), answer: many
+        };
+      }
+    },
+    types: {
+      name: 'Word types', emo: '🏷️',
+      make(c) {
+        const kinds = c >= 4 ? ['Noun', 'Verb', 'Adjective', 'Adverb'] : ['Noun', 'Verb', 'Adjective'];
+        const s = pick(SENTENCES.filter(x => Object.values(x.w).some(k => kinds.includes(k))));
+        const word = pick(Object.keys(s.w).filter(k => kinds.includes(s.w[k])));
+        const html = esc(s.s).replace(new RegExp(`\\b${word}\\b`), `<mark>${word}</mark>`);
+        return {
+          title: 'Naming, doing or describing?', text: `What kind of word is “${word}”?`, sentenceHtml: html,
+          speak: `${s.s} What kind of word is ${word}?`, options: kinds, answer: s.w[word], fixedOrder: true
+        };
+      }
+    },
+    abc: {
+      name: 'ABC order', emo: '🔠',
+      make(c) {
+        if (c === 2) {
+          const before = Math.random() < 0.5;
+          const i = before ? rand(1, 25) : rand(0, 24);
+          const L = ALPHA[i], ans = ALPHA[before ? i - 1 : i + 1];
+          const wrong = shuffle([...ALPHA].filter(x => x !== ans && x !== L)).slice(0, 3);
+          return {
+            title: 'Alphabet', text: `Which letter comes ${before ? 'just before' : 'just after'}`, big: L.toUpperCase(),
+            speak: `Which letter comes ${before ? 'just before' : 'just after'} ${L.toUpperCase()}?`,
+            options: shuffle([ans, ...wrong]).map(x => x.toUpperCase()), answer: ans.toUpperCase()
+          };
+        }
+        let words;
+        if (c === 3) {
+          const all = shuffle([...SPELL[2], ...SPELL[3]]);
+          const seen = new Set(); words = [];
+          for (const w of all) { if (!seen.has(w[0])) { seen.add(w[0]); words.push(w); } if (words.length === 4) break; }
+        } else if (c === 4) {
+          words = shuffle(pick(Object.values(ABC_SHARED1))).slice(0, 4);
+        } else {
+          words = shuffle(pick(Object.values(ABC_GROUPS))).slice(0, 4);
+        }
+        const ans = [...words].sort((a, b) => a.localeCompare(b))[0];
+        return {
+          title: 'Dictionary order', text: 'Which word comes first in ABC order?',
+          speak: 'Which word comes first in A B C order? ' + words.join(', '), options: words, answer: ans
+        };
+      }
+    }
+  };
+
+  const ALL = { ...maths, ...english };
+
+  /* ---------- HOME ---------- */
+  function refreshStars() { document.querySelectorAll('.starCount').forEach(el => { el.textContent = store.data.stars; }); }
+  function bestKey(topic) { return `${store.data.cls}-${topic}`; }
+
+  function renderHome() {
+    const classes = $('#classes');
+    classes.innerHTML = '';
+    [2, 3, 4, 5].forEach(c => {
+      const b = document.createElement('button');
+      b.className = 'cls';
+      b.setAttribute('aria-pressed', String(store.data.cls === c));
+      b.innerHTML = `<small>Class</small>${c}`;
+      b.onclick = () => { store.data.cls = c; store.save(); renderHome(); };
+      classes.appendChild(b);
+    });
+    const fill = (el, group) => {
+      el.innerHTML = '';
+      Object.entries(group).forEach(([id, t]) => {
+        const best = store.data.best[bestKey(id)];
+        const b = document.createElement('button');
+        b.className = 'topic';
+        b.innerHTML = `<span class="emo">${t.emo}</span><span class="name">${t.name}</span>
+          <span class="best">${best != null ? `Best: ${best}/${QUESTIONS_PER_ROUND}` : 'Not played yet'}</span>`;
+        b.onclick = () => startRound(id);
+        el.appendChild(b);
+      });
+    };
+    fill($('#mathsGrid'), maths);
+    fill($('#englishGrid'), english);
+    refreshStars();
+  }
+
+  function show(id) {
+    ['home', 'quiz', 'result'].forEach(s => { $('#' + s).hidden = s !== id; });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- QUIZ ---------- */
+  let round = null;
+
+  function startRound(topic) {
+    round = { topic, i: 0, correct: 0, q: null, recent: [] };
+    show('quiz');
+    nextQuestion();
+  }
+
+  function nextQuestion() {
+    const t = ALL[round.topic];
+    let q, tries = 0;
+    do { q = t.make(store.data.cls); tries++; } while (round.recent.includes(q.answer + '|' + (q.big || q.text)) && tries < 15);
+    round.recent.push(q.answer + '|' + (q.big || q.text));
+    round.q = q;
+
+    $('#progBar').style.width = (round.i / QUESTIONS_PER_ROUND * 100) + '%';
+    $('#qTitle').textContent = `${t.emo} ${t.name} · Question ${round.i + 1} of ${QUESTIONS_PER_ROUND}`;
+
+    let html = '';
+    if (q.text) html += `<p class="qtext">${esc(q.text)}</p>`;
+    if (q.big) html += `<p class="qbig">${esc(q.big)}</p>`;
+    if (q.bigHtml) html += `<p class="qbig">${q.bigHtml}</p>`;
+    if (q.sentenceHtml) html += `<p class="sentence">${q.sentenceHtml}</p>`;
+    if (canSpeak) {
+      html += q.hear && q.autoSpeak
+        ? `<button class="speak big" data-say="1">🔊 Hear the word</button>`
+        : `<button class="speak" data-say="1">🔊 Read to me</button>`;
+    }
+    const card = $('#qCard');
+    card.innerHTML = html;
+    if (q.long) card.querySelector('.qtext').style.fontSize = '22px';
+    const sp = card.querySelector('[data-say]');
+    if (sp) sp.onclick = () => say(q.speak);
+
+    const opts = $('#opts');
+    opts.innerHTML = '';
+    q.options.forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = o;
+      b.onclick = () => answer(b, o);
+      opts.appendChild(b);
+    });
+
+    $('#feedback').textContent = '';
+    $('#feedback').className = 'feedback';
+    $('#nextBtn').hidden = true;
+    card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
+    if (q.autoSpeak) setTimeout(() => say(q.speak), 250);
+  }
+
+  const PRAISE = ['Great job!', 'Super!', 'Well done!', 'Excellent!', 'You got it!', 'Brilliant!'];
+
+  function answer(btn, choice) {
+    const q = round.q;
+    const buttons = [...document.querySelectorAll('#opts .opt')];
+    buttons.forEach(b => { b.disabled = true; });
+    const fb = $('#feedback');
+    if (choice === q.answer) {
+      btn.classList.add('right');
+      round.correct++;
+      store.data.stars++; store.save(); refreshStars();
+      const p = pick(PRAISE);
+      fb.textContent = `⭐ ${p}`; fb.className = 'feedback good';
+      beep(true); say(p);
+    } else {
+      btn.classList.add('wrong');
+      buttons.find(b => b.textContent === q.answer)?.classList.add('right');
+      fb.textContent = `The answer is ${q.answer}`; fb.className = 'feedback bad';
+      beep(false); say(`The answer is ${q.answer}`);
+    }
+    const next = $('#nextBtn');
+    next.textContent = round.i + 1 >= QUESTIONS_PER_ROUND ? 'See my stars →' : 'Next →';
+    next.hidden = false;
+    next.focus({ preventScroll: true });
+  }
+
+  $('#nextBtn').onclick = () => {
+    round.i++;
+    if (round.i >= QUESTIONS_PER_ROUND) finishRound(); else nextQuestion();
+  };
+
+  function finishRound() {
+    const k = bestKey(round.topic);
+    const prev = store.data.best[k];
+    if (prev == null || round.correct > prev) store.data.best[k] = round.correct;
+    store.save();
+    const n = round.correct;
+    const [emo, title] = n === 10 ? ['🏆', 'Perfect score!'] : n >= 8 ? ['🎉', 'Fantastic!'] : n >= 5 ? ['😊', 'Good work!'] : ['💪', 'Keep practising!'];
+    $('#rEmo').textContent = emo;
+    $('#rTitle').textContent = title;
+    $('#rScore').textContent = `You got ${n} out of ${QUESTIONS_PER_ROUND} right`;
+    $('#rStars').textContent = n ? '★'.repeat(n) : '☆';
+    show('result');
+    say(`${title} You got ${n} out of ${QUESTIONS_PER_ROUND}.`);
+  }
+
+  $('#backBtn').onclick = () => { if (canSpeak) speechSynthesis.cancel(); renderHome(); show('home'); };
+  $('#homeBtn').onclick = () => { renderHome(); show('home'); };
+  $('#againBtn').onclick = () => startRound(round.topic);
+  $('#resetBtn').onclick = () => {
+    if (confirm('Reset all stars and best scores?')) { store.data.stars = 0; store.data.best = {}; store.save(); renderHome(); }
+  };
+
+  renderHome();
+
+  /* ---------- offline / install ---------- */
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+})();
+</script>
+</body>
+</html>
